@@ -22,8 +22,8 @@
 		898462061BF3382900FA4EB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E51BF3382900FA4EB3 /* UIKit.framework */; };
 		8984620E1BF3382900FA4EB3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8984620C1BF3382900FA4EB3 /* InfoPlist.strings */; };
 		898462101BF3382900FA4EB3 /* CodeGenTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */; };
-		89D180711BF342B5009DA31A /* XXBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D1806E1BF342B5009DA31A /* XXBook.m */; };
-		89D180721BF342B5009DA31A /* XXBookRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D180701BF342B5009DA31A /* XXBookRepository.m */; };
+		89D180711BF342B5009DA31A /* XXWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D1806E1BF342B5009DA31A /* XXWidget.m */; };
+		89D180721BF342B5009DA31A /* XXWidgetRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D180701BF342B5009DA31A /* XXWidgetRepository.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,10 +57,10 @@
 		8984620B1BF3382900FA4EB3 /* CodeGenTestTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CodeGenTestTests-Info.plist"; sourceTree = "<group>"; };
 		8984620D1BF3382900FA4EB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CodeGenTestTests.m; sourceTree = "<group>"; };
-		89D1806D1BF342B5009DA31A /* XXBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXBook.h; sourceTree = "<group>"; };
-		89D1806E1BF342B5009DA31A /* XXBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXBook.m; sourceTree = "<group>"; };
-		89D1806F1BF342B5009DA31A /* XXBookRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXBookRepository.h; sourceTree = "<group>"; };
-		89D180701BF342B5009DA31A /* XXBookRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXBookRepository.m; sourceTree = "<group>"; };
+		89D1806D1BF342B5009DA31A /* XXWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidget.h; sourceTree = "<group>"; };
+		89D1806E1BF342B5009DA31A /* XXWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXWidget.m; sourceTree = "<group>"; };
+		89D1806F1BF342B5009DA31A /* XXWidgetRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidgetRepository.h; sourceTree = "<group>"; };
+		89D180701BF342B5009DA31A /* XXWidgetRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXWidgetRepository.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,10 +165,10 @@
 		89D1806C1BF342B5009DA31A /* gen-src */ = {
 			isa = PBXGroup;
 			children = (
-				89D1806D1BF342B5009DA31A /* XXBook.h */,
-				89D1806E1BF342B5009DA31A /* XXBook.m */,
-				89D1806F1BF342B5009DA31A /* XXBookRepository.h */,
-				89D180701BF342B5009DA31A /* XXBookRepository.m */,
+				89D1806D1BF342B5009DA31A /* XXWidget.h */,
+				89D1806E1BF342B5009DA31A /* XXWidget.m */,
+				89D1806F1BF342B5009DA31A /* XXWidgetRepository.h */,
+				89D180701BF342B5009DA31A /* XXWidgetRepository.m */,
 			);
 			path = "gen-src";
 			sourceTree = SOURCE_ROOT;
@@ -274,8 +274,8 @@
 			files = (
 				898461EE1BF3382900FA4EB3 /* main.m in Sources */,
 				898461FB1BF3382900FA4EB3 /* SLViewController.m in Sources */,
-				89D180721BF342B5009DA31A /* XXBookRepository.m in Sources */,
-				89D180711BF342B5009DA31A /* XXBook.m in Sources */,
+				89D180721BF342B5009DA31A /* XXWidgetRepository.m in Sources */,
+				89D180711BF342B5009DA31A /* XXWidget.m in Sources */,
 				898461F21BF3382900FA4EB3 /* SLAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
