@@ -38,7 +38,6 @@
 /* Begin PBXFileReference section */
 		898461DE1BF3382900FA4EB3 /* CodeGenTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeGenTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		898461E11BF3382900FA4EB3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		898461E31BF3382900FA4EB3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		898461E51BF3382900FA4EB3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		898461E91BF3382900FA4EB3 /* CodeGenTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CodeGenTest-Info.plist"; sourceTree = "<group>"; };
 		898461EB1BF3382900FA4EB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -56,7 +55,6 @@
 		8984620B1BF3382900FA4EB3 /* CodeGenTestTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CodeGenTestTests-Info.plist"; sourceTree = "<group>"; };
 		8984620D1BF3382900FA4EB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CodeGenTestTests.m; sourceTree = "<group>"; };
-		89A0A8501C2417BF00790A77 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		89D1806D1BF342B5009DA31A /* XXWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidget.h; sourceTree = "<group>"; };
 		89D1806E1BF342B5009DA31A /* XXWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXWidget.m; sourceTree = "<group>"; };
 		89D1806F1BF342B5009DA31A /* XXWidgetRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidgetRepository.h; sourceTree = "<group>"; };
@@ -108,10 +106,8 @@
 		898461E01BF3382900FA4EB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				89A0A8501C2417BF00790A77 /* CoreLocation.framework */,
-				898461E11BF3382900FA4EB3 /* Foundation.framework */,
-				898461E31BF3382900FA4EB3 /* CoreGraphics.framework */,
 				898461E51BF3382900FA4EB3 /* UIKit.framework */,
+				898461E11BF3382900FA4EB3 /* Foundation.framework */,
 				898462031BF3382900FA4EB3 /* XCTest.framework */,
 			);
 			name = Frameworks;
