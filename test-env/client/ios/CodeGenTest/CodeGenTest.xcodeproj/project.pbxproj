@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		898461E21BF3382900FA4EB3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E11BF3382900FA4EB3 /* Foundation.framework */; };
-		898461E41BF3382900FA4EB3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E31BF3382900FA4EB3 /* CoreGraphics.framework */; };
 		898461E61BF3382900FA4EB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E51BF3382900FA4EB3 /* UIKit.framework */; };
 		898461EC1BF3382900FA4EB3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 898461EA1BF3382900FA4EB3 /* InfoPlist.strings */; };
 		898461EE1BF3382900FA4EB3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 898461ED1BF3382900FA4EB3 /* main.m */; };
@@ -22,6 +21,7 @@
 		898462061BF3382900FA4EB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E51BF3382900FA4EB3 /* UIKit.framework */; };
 		8984620E1BF3382900FA4EB3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8984620C1BF3382900FA4EB3 /* InfoPlist.strings */; };
 		898462101BF3382900FA4EB3 /* CodeGenTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */; };
+		89A0A8521C2417F400790A77 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89A0A8501C2417BF00790A77 /* CoreLocation.framework */; };
 		89D180711BF342B5009DA31A /* XXWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D1806E1BF342B5009DA31A /* XXWidget.m */; };
 		89D180721BF342B5009DA31A /* XXWidgetRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D180701BF342B5009DA31A /* XXWidgetRepository.m */; };
 /* End PBXBuildFile section */
@@ -57,6 +57,7 @@
 		8984620B1BF3382900FA4EB3 /* CodeGenTestTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CodeGenTestTests-Info.plist"; sourceTree = "<group>"; };
 		8984620D1BF3382900FA4EB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CodeGenTestTests.m; sourceTree = "<group>"; };
+		89A0A8501C2417BF00790A77 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		89D1806D1BF342B5009DA31A /* XXWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidget.h; sourceTree = "<group>"; };
 		89D1806E1BF342B5009DA31A /* XXWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXWidget.m; sourceTree = "<group>"; };
 		89D1806F1BF342B5009DA31A /* XXWidgetRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXWidgetRepository.h; sourceTree = "<group>"; };
@@ -68,7 +69,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				898461E41BF3382900FA4EB3 /* CoreGraphics.framework in Frameworks */,
 				898461E61BF3382900FA4EB3 /* UIKit.framework in Frameworks */,
 				898461E21BF3382900FA4EB3 /* Foundation.framework in Frameworks */,
 			);
@@ -81,6 +81,7 @@
 				898462041BF3382900FA4EB3 /* XCTest.framework in Frameworks */,
 				898462061BF3382900FA4EB3 /* UIKit.framework in Frameworks */,
 				898462051BF3382900FA4EB3 /* Foundation.framework in Frameworks */,
+				89A0A8521C2417F400790A77 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +110,7 @@
 		898461E01BF3382900FA4EB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				89A0A8501C2417BF00790A77 /* CoreLocation.framework */,
 				898461E11BF3382900FA4EB3 /* Foundation.framework */,
 				898461E31BF3382900FA4EB3 /* CoreGraphics.framework */,
 				898461E51BF3382900FA4EB3 /* UIKit.framework */,
