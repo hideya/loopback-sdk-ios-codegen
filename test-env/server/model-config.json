@@ -32,7 +32,7 @@
     "dataSource": "db",
     "public": false
   },
-  "book": {
+  "widget": {
     "dataSource": "db",
     "public": true
   }

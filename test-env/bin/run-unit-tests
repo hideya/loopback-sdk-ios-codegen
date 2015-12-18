@@ -1,0 +1,40 @@
+#!/bin/bash
+set -ex
+trap 'kill $(jobs -p)' EXIT
+
+# initialize the tool `bin/lb-ios` and the test server under `test-env/server`
+npm install
+
+# generate the models in Objective-C representation
+bin/lb-ios -v -p XX test-env/server/server test-env/client/ios/CodeGenTest/gen-src
+
+# run the test server
+node test-env/server/server.js &
+
+cd test-env/client/ios/CodeGenTest
+
+# setup the test environment
+pod install
+
+# record the build environment
+xcodebuild -version
+xcodebuild -showsdks
+instruments -s devices
+
+# simulator destination check is necessary to run on the CI
+IPHONE6S_SIM_EXIST=`instruments -s devices | grep 'iPhone 6s'`
+if [[ -n "${IPHONE6S_SIM_EXIST}" ]]; then
+  TEST_DESTINATION='platform=iOS Simulator,name=iPhone 6s,OS=latest'
+else
+  TEST_DESTINATION='platform=iOS Simulator,name=iPhone Retina (4-inch 64-bit),OS=latest'
+fi
+
+# compile and run the unit tests
+xcodebuild \
+  -verbose \
+  -workspace CodeGenTest.xcworkspace \
+  -scheme CodeGenTest \
+  -sdk iphonesimulator \
+  -destination "${TEST_DESTINATION}" \
+  ${XCODEBUILD_ARGS} \
+  clean test

@@ -8,47 +8,32 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-#import "XXBook.h"
-#import "XXBookRepository.h"
+#import "XXWidget.h"
+#import "XXWidgetRepository.h"
 
 
-// The following is a workaround to run the unit tests on Xcode 5 that doesn't have support
-// for XCTestExpectation.  To be removed once CI is updated to use Xcode 6 or later.
-#undef ASYNC_TEST_START
-#undef ASYNC_TEST_END
-#undef ASYNC_TEST_SIGNAL
-#undef ASYNC_TEST_FAILURE_BLOCK
-
+// Utility macros for asynchronous testing
+// NOTE: since the CI uses Xcode 5, we cannot depend on XCTestExpectation.
+// Use dispatch_semaphore instead.
 #define ASYNC_TEST_START dispatch_semaphore_t sen_semaphore = dispatch_semaphore_create(0);
 #define ASYNC_TEST_END \
 while (dispatch_semaphore_wait(sen_semaphore, DISPATCH_TIME_NOW)) \
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 #define ASYNC_TEST_SIGNAL dispatch_semaphore_signal(sen_semaphore);
 #define ASYNC_TEST_FAILURE_BLOCK \
-^(NSError *error) { \
-    XCTFail(@"Test failed: %@", error.description); \
-    ASYNC_TEST_SIGNAL \
-}
+    ^(NSError *error) { \
+        XCTFail(@"Test failed: %@", error.description); \
+        ASYNC_TEST_SIGNAL \
+    }
 
 
 @interface CodeGenTestTests : XCTestCase
 
 @property (nonatomic, strong) LBRESTAdapter *adapter;
-@property (nonatomic, strong) XXBookRepository *repository;
+@property (nonatomic, strong) XXWidgetRepository *repository;
 
 @end
 
-static NSString *bookTitle = @"The Hitchhiker's Guide to the Galaxy";
-static NSString *bookAuthoer = @"Douglas Adams";
-static NSInteger bookTotalPages = 224;
-static NSArray *bookKeywords;
-
-static NSString *altBookTitle = @"Mostly Harmless";
-static NSInteger altBookTotalPages = 240;
-
-static NSString *anotherBookTitle = @"A Farewell To Arms";
-static NSString *anotherBookAuthoer = @"Ernest Hemingway";
-static NSInteger anotherBookTotalPages = 352;
 
 static NSNumber *createdId;
 
@@ -72,6 +57,7 @@ static NSNumber *createdId;
     [suite addTest:[self testCaseWithSelector:@selector(testUpdateAllWithWhereFilterData)]];
     [suite addTest:[self testCaseWithSelector:@selector(testCount)]];
     [suite addTest:[self testCaseWithSelector:@selector(testCountWithWhereFilter)]];
+    [suite addTest:[self testCaseWithSelector:@selector(testDataTypes)]];
     [suite addTest:[self testCaseWithSelector:@selector(testRemove)]];
     return suite;
 }
@@ -80,29 +66,22 @@ static NSNumber *createdId;
     [super setUp];
 
     self.adapter = [LBRESTAdapter adapterWithURL:[NSURL URLWithString:@"http://localhost:3010/api"]];
-    self.repository = (XXBookRepository*)[self.adapter repositoryWithClass:[XXBookRepository class]];
-
-    bookKeywords = @[ @"novel", @"sci-fi", @"comedy" ];
+    self.repository = (XXWidgetRepository*)[self.adapter repositoryWithClass:[XXWidgetRepository class]];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
 - (void)testSave {
-    XXBook *book = [self.repository modelWithDictionary:nil];
-    book.title = bookTitle;
-    book.author = bookAuthoer;
-    book.totalPages = bookTotalPages;
-    book.hardcover = YES;
-    book.keywords = bookKeywords;
+    XXWidget *widget = [self.repository modelWithDictionary:nil];
+    widget.name = @"Foobar";
 
     ASYNC_TEST_START
-    [book saveWithSuccess:^{
-        NSLog(@"Completed with: %@", book._id);
-        XCTAssertNotNil(book._id, @"Invalid id");
-        createdId = book._id;
+    [widget saveWithSuccess:^{
+        NSLog(@"Completed with: %@", widget._id);
+        XCTAssertNotNil(widget._id, @"Invalid id");
+        createdId = widget._id;
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
     ASYNC_TEST_END
@@ -119,13 +98,9 @@ static NSNumber *createdId;
 
 - (void)testFindById {
     ASYNC_TEST_START
-    [self.repository findById:createdId success:^(XXBook *book) {
-        XCTAssertNotNil(book, @"No model found");
-        XCTAssertEqualObjects(book.title, bookTitle, @"Invalid title");
-        XCTAssertEqualObjects(book.author, bookAuthoer, @"Invalid author");
-        XCTAssertEqual(book.totalPages, bookTotalPages, @"Invalid totalPages");
-        XCTAssertEqual(book.hardcover, YES, @"Invalid hardcover property");
-        XCTAssertEqualObjects(book.keywords, bookKeywords, @"Invalid keywords");
+    [self.repository findById:createdId success:^(XXWidget *widget) {
+        XCTAssertNotNil(widget, @"No model found");
+        XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid name");
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
     ASYNC_TEST_END
@@ -134,46 +109,39 @@ static NSNumber *createdId;
 - (void)testFindByIdFilter {
     ASYNC_TEST_START
     [self.repository findById:createdId
-                       filter: @{@"where": @{ @"title" : bookTitle }}
-                      success:^(XXBook *book) {
-        XCTAssertNotNil(book, @"No model found");
-        XCTAssertEqualObjects(book.title, bookTitle, @"Invalid title");
+                       filter: @{@"where": @{ @"name" : @"Foobar" }}
+                      success:^(XXWidget *widget) {
+        XCTAssertNotNil(widget, @"No model found");
+        XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid name");
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
     ASYNC_TEST_END
 }
 
 - (void)testAll {
-    // add one more book for testing
-    XXBook *anotherBook = [self.repository modelWithDictionary:nil];
-    anotherBook.title = anotherBookTitle;
-    anotherBook.author = anotherBookAuthoer;
-    anotherBook.totalPages = anotherBookTotalPages;
-    anotherBook.hardcover = YES;
+    // Add one more widget for testing
+    XXWidget *anotherWidget = [self.repository modelWithDictionary:nil];
+    anotherWidget.name = @"Barfoo";
 
     ASYNC_TEST_START
-    [anotherBook saveWithSuccess:^{
-        [self.repository allWithSuccess:^(NSArray *books) {
-            BOOL foundBook1 = NO;
-            BOOL foundBook2 = NO;
-            XCTAssertNotNil(books, @"No models returned.");
-            XCTAssertTrue([books count] >= 2, @"Invalid # of models returned: %lu", (unsigned long)[books count]);
-            for (int i = 0; i < books.count; i++) {
-                XCTAssertTrue([[books[i] class] isSubclassOfClass:[XXBook class]], @"Invalid class.");
-                XXBook *book = books[i];
-                if ([book.title isEqualToString:bookTitle] &&
-                    [book.author isEqualToString:bookAuthoer] &&
-                     book.totalPages == bookTotalPages) {
-                    foundBook1 = YES;
+    [anotherWidget saveWithSuccess:^{
+        [self.repository allWithSuccess:^(NSArray *widgets) {
+            BOOL foundWidgetFoobar = NO;
+            BOOL foundWidgetBarfoo = NO;
+            XCTAssertNotNil(widgets, @"No models returned.");
+            XCTAssertTrue([widgets count] >= 2, @"Invalid # of models returned: %lu", (unsigned long)[widgets count]);
+            for (int i = 0; i < widgets.count; i++) {
+                XCTAssertTrue([[widgets[i] class] isSubclassOfClass:[XXWidget class]], @"Invalid class.");
+                XXWidget *widget = widgets[i];
+                if ([widget.name isEqualToString:@"Foobar"]) {
+                    foundWidgetFoobar = YES;
                 }
-                if ([book.title isEqualToString:anotherBookTitle] &&
-                    [book.author isEqualToString:anotherBookAuthoer] &&
-                     book.totalPages == anotherBookTotalPages) {
-                    foundBook2 = YES;
+                if ([widget.name isEqualToString:@"Barfoo"]) {
+                    foundWidgetBarfoo = YES;
                 }
             }
-            XCTAssertTrue(foundBook1, @"Book \"%@\" is not found correctly", bookTitle);
-            XCTAssertTrue(foundBook2, @"Book \"%@\" is not found correctly", anotherBookTitle);
+            XCTAssertTrue(foundWidgetFoobar, @"Widget \"Foobar\" is not found correctly");
+            XCTAssertTrue(foundWidgetBarfoo, @"Widget \"Barfoo\" is not found correctly");
             ASYNC_TEST_SIGNAL
         } failure:ASYNC_TEST_FAILURE_BLOCK];
     } failure:ASYNC_TEST_FAILURE_BLOCK];
@@ -182,14 +150,14 @@ static NSNumber *createdId;
 
 - (void)testFindWithFilter {
     ASYNC_TEST_START
-    [self.repository findWithFilter:@{@"where": @{ @"title": bookTitle }}
-                            success:^(NSArray *books) {
-        XCTAssertNotNil(books, @"No models returned.");
-        XCTAssertTrue([books count] >= 1, @"Invalid # of models returned: %lu", (unsigned long)[books count]);
-        for (int i = 0; i < books.count; i++) {
-            XCTAssertTrue([[books[i] class] isSubclassOfClass:[XXBook class]], @"Invalid class.");
-            XXBook *book = books[i];
-            XCTAssertEqualObjects(book.title, bookTitle, @"Invalid title");
+    [self.repository findWithFilter:@{@"where": @{ @"name": @"Foobar" }}
+                            success:^(NSArray *widgets) {
+        XCTAssertNotNil(widgets, @"No models returned.");
+        XCTAssertTrue([widgets count] >= 1, @"Invalid # of models returned: %lu", (unsigned long)[widgets count]);
+        for (int i = 0; i < widgets.count; i++) {
+            XCTAssertTrue([[widgets[i] class] isSubclassOfClass:[XXWidget class]], @"Invalid class.");
+            XXWidget *widget = widgets[i];
+            XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid name");
         }
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
@@ -198,9 +166,9 @@ static NSNumber *createdId;
 
 - (void)testFindOne {
     ASYNC_TEST_START
-    [self.repository findOneWithSuccess:^(XXBook *book) {
-        // there should be at least one book
-        XCTAssertNotNil(book, @"No model found");
+    [self.repository findOneWithSuccess:^(XXWidget *widget) {
+        // There should be at least one widget
+        XCTAssertNotNil(widget, @"No model found");
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
     ASYNC_TEST_END
@@ -208,9 +176,9 @@ static NSNumber *createdId;
 
 - (void)testFindOneWithFilter {
     ASYNC_TEST_START
-    [self.repository findOneWithFilter:@{@"where": @{ @"title": bookTitle }} success:^(XXBook *book) {
-        XCTAssertNotNil(book, @"No model found");
-        XCTAssertEqualObjects(book.title, bookTitle, @"Invalid title");
+    [self.repository findOneWithFilter:@{@"where": @{ @"name": @"Foobar" }} success:^(XXWidget *widget) {
+        XCTAssertNotNil(widget, @"No model found");
+        XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid name");
         ASYNC_TEST_SIGNAL
     } failure:ASYNC_TEST_FAILURE_BLOCK];
     ASYNC_TEST_END
@@ -218,20 +186,14 @@ static NSNumber *createdId;
 
 - (void)testUpdate {
     ASYNC_TEST_START
-    [self.repository findById:createdId success:^(XXBook *book) {
-        XCTAssertNotNil(book, @"No book found with ID %@", createdId);
-        book.title = altBookTitle;
-        book.totalPages = altBookTotalPages;
-        book.hardcover = NO;
+    [self.repository findById:createdId success:^(XXWidget *widget) {
+        XCTAssertNotNil(widget, @"No model found with ID %@", createdId);
+        widget.name = @"FoobarUpdated";
 
-        [book saveWithSuccess:^() {
-            [self.repository findById:createdId success:^(XXBook *bookAlt) {
-                XCTAssertNotNil(bookAlt, @"No book found with ID %@", createdId);
-                XCTAssertEqualObjects(bookAlt.title, altBookTitle, @"Invalid title");
-                XCTAssertEqualObjects(bookAlt.author, bookAuthoer, @"Invalid author");
-                XCTAssertEqual(bookAlt.totalPages, altBookTotalPages, @"Invalid totalPages");
-                XCTAssertEqual(bookAlt.hardcover, NO, @"Invalid hardcover property");
-                XCTAssertEqualObjects(bookAlt.keywords, bookKeywords, @"Invalid keywords");
+        [widget saveWithSuccess:^() {
+            [self.repository findById:createdId success:^(XXWidget *widgetAlt) {
+                XCTAssertNotNil(widgetAlt, @"No model found with ID %@", createdId);
+                XCTAssertEqualObjects(widget.name, @"FoobarUpdated", @"Invalid name");
                 ASYNC_TEST_SIGNAL
             } failure:ASYNC_TEST_FAILURE_BLOCK];
         } failure:ASYNC_TEST_FAILURE_BLOCK];
@@ -241,25 +203,17 @@ static NSNumber *createdId;
 
 - (void)testUpdateAllWithWhereFilterData {
     // Revert the change done in testUpdate
-    XXBook *bookOrig = [self.repository modelWithDictionary:nil];
-    bookOrig.title = bookTitle;
-    bookOrig.author = bookAuthoer;
-    bookOrig.totalPages = bookTotalPages;
-    bookOrig.hardcover = YES;
-    bookOrig.keywords = bookKeywords;
+    XXWidget *widgetOrig = [self.repository modelWithDictionary:nil];
+    widgetOrig.name = @"Foobar";
 
     ASYNC_TEST_START
-    [self.repository updateAllWithWhereFilter:@{ @"title": altBookTitle }
-                                         data:bookOrig
+    [self.repository updateAllWithWhereFilter:@{ @"name": @"FoobarUpdated" }
+                                         data:widgetOrig
                                       success:^(NSDictionary *dictionary) {
         XCTAssertTrue(dictionary.count > 0, @"No model updated");
-        [self.repository findById:createdId success:^(XXBook *book) {
-            XCTAssertNotNil(book, @"No model found");
-            XCTAssertEqualObjects(book.title, bookTitle, @"Invalid title");
-            XCTAssertEqualObjects(book.author, bookAuthoer, @"Invalid author");
-            XCTAssertEqual(book.totalPages, bookTotalPages, @"Invalid totalPages");
-            XCTAssertEqual(book.hardcover, YES, @"Invalid hardcover property");
-            XCTAssertEqualObjects(book.keywords, bookKeywords, @"Invalid keywords");
+        [self.repository findById:createdId success:^(XXWidget *widget) {
+            XCTAssertNotNil(widget, @"No model found");
+            XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid title");
             ASYNC_TEST_SIGNAL
         } failure:ASYNC_TEST_FAILURE_BLOCK];
     } failure:ASYNC_TEST_FAILURE_BLOCK];
@@ -271,14 +225,11 @@ static NSNumber *createdId;
     [self.repository countWithSuccess:^(NSInteger count) {
         NSInteger prevCount = count;
 
-        // add one more book for testing
-        XXBook *anotherBook = [self.repository modelWithDictionary:nil];
-        anotherBook.title = anotherBookTitle;
-        anotherBook.author = anotherBookAuthoer;
-        anotherBook.totalPages = anotherBookTotalPages;
-        anotherBook.hardcover = YES;
+        // Add one more widget for testing
+        XXWidget *anotherWidget = [self.repository modelWithDictionary:nil];
+        anotherWidget.name = @"widgetForCountTest";
 
-        [anotherBook saveWithSuccess:^{
+        [anotherWidget saveWithSuccess:^{
             [self.repository countWithSuccess:^(NSInteger count) {
                 XCTAssertTrue(count == prevCount + 1, @"Invalid # of models returned: %lu", count);
                 ASYNC_TEST_SIGNAL
@@ -290,19 +241,16 @@ static NSNumber *createdId;
 
 - (void)testCountWithWhereFilter {
     ASYNC_TEST_START
-    [self.repository countWithWhereFilter:@{ @"title": anotherBookTitle }
+    [self.repository countWithWhereFilter:@{ @"name": @"widgetForCountTest" }
                                   success:^(NSInteger count) {
         NSInteger prevCount = count;
 
-        // add one more book for testing
-        XXBook *anotherBook = [self.repository modelWithDictionary:nil];
-        anotherBook.title = anotherBookTitle;
-        anotherBook.author = anotherBookAuthoer;
-        anotherBook.totalPages = anotherBookTotalPages;
-        anotherBook.hardcover = YES;
+        // Add one more widget for testing
+        XXWidget *anotherWidget = [self.repository modelWithDictionary:nil];
+        anotherWidget.name = @"widgetForCountTest";
 
-        [anotherBook saveWithSuccess:^{
-            [self.repository countWithWhereFilter:@{ @"title": anotherBookTitle }
+        [anotherWidget saveWithSuccess:^{
+            [self.repository countWithWhereFilter:@{ @"name": @"widgetForCountTest" }
                                           success:^(NSInteger count) {
                 XCTAssertTrue(count == prevCount + 1, @"Invalid # of models returned: %lu", count);
                 ASYNC_TEST_SIGNAL
@@ -312,11 +260,69 @@ static NSNumber *createdId;
     ASYNC_TEST_END
 }
 
+- (void)testDataTypes {
+    XXWidget *widget = (XXWidget*)[self.repository modelWithDictionary:@{
+        @"name" : @"Foobar",
+        @"bars" : @123,
+        @"flag" : @YES,
+        @"data" : @{ @"data1": @1, @"data2": @2 },
+        @"stringArray": @[ @"one", @"two", @"three" ],
+        @"date" : @"1970-01-01T00:00:00.000Z",
+        @"buffer": @{ @"type": @"Buffer", @"data": @[ @12, @34, @56 ] },
+        @"geopoint": @{ @"lat": @12.3, @"lng": @45.6 },
+    }];
+
+    XCTAssertNil(widget._id, @"Invalid id");
+    XCTAssertEqualObjects(widget.name, @"Foobar", @"Invalid name.");
+    XCTAssertEqual(widget.bars, 123, @"Invalid bars.");
+    XCTAssertEqual(widget.flag, YES, @"Invalid flag.");
+    XCTAssertEqualObjects(widget.data, (@{@"data1": @1, @"data2": @2}), @"Invalid data.");
+    XCTAssertEqualObjects(widget.stringArray, (@[@"one", @"two", @"three"]), @"Invalid stringArray.");
+    XCTAssertEqualObjects(widget.date, [NSDate dateWithTimeIntervalSince1970:0], @"Invalid date.");
+    const char bufferBytes[] = { 12, 34, 56 };
+    NSMutableData *testData = [NSMutableData dataWithBytes:bufferBytes length:sizeof(bufferBytes)];
+    XCTAssertEqualObjects(widget.buffer, testData, @"Invalid buffer.");
+    XCTAssertEqual(widget.geopoint.coordinate.latitude, 12.3, @"Invalid latitude.");
+    XCTAssertEqual(widget.geopoint.coordinate.longitude, 45.6, @"Invalid longitude.");
+
+    widget.name = @"Barfoo";
+    widget.bars = 456;
+    widget.flag = NO;
+    widget.data = @{ @"data3": @3, @"data4": @4 };
+    widget.stringArray = @[ @"four", @"five", @"six" ];
+    widget.date = [NSDate dateWithTimeIntervalSince1970:123];
+    const char bufferBytes2[] = { 65, 43, 21 };
+    widget.buffer = [NSMutableData dataWithBytes:bufferBytes2 length:sizeof(bufferBytes2)];
+    CLLocation *newGeoPoint = [[CLLocation alloc] initWithLatitude:-65.4 longitude:-32.1];
+    widget.geopoint = newGeoPoint;
+
+    ASYNC_TEST_START
+    [widget saveWithSuccess:^{
+        NSNumber *createdId = widget._id;
+        [self.repository findById:createdId success:^(XXWidget *widget) {
+            XCTAssertNotNil(widget._id, @"Invalid id");
+            XCTAssertEqualObjects(widget.name, @"Barfoo", @"Invalid name.");
+            XCTAssertEqual(widget.bars, 456, @"Invalid bars.");
+            XCTAssertEqual(widget.flag, NO, @"Invalid flag.");
+            XCTAssertEqualObjects(widget.data, (@{ @"data3": @3, @"data4": @4 }), @"Invalid data.");
+            XCTAssertEqualObjects(widget.stringArray, (@[ @"four", @"five", @"six" ]), @"Invalid array.");
+            XCTAssertEqualObjects(widget.date, [NSDate dateWithTimeIntervalSince1970:123], @"Invalid date.");
+            const char bufferBytes2[] = { 65, 43, 21 };
+            NSMutableData *testData = [NSMutableData dataWithBytes:bufferBytes2 length:sizeof(bufferBytes2)];
+            XCTAssertEqualObjects(widget.buffer, testData, @"Invalid buffer.");
+            XCTAssertEqual(widget.geopoint.coordinate.latitude, -65.4, @"Invalid latitude.");
+            XCTAssertEqual(widget.geopoint.coordinate.longitude, -32.1, @"Invalid longitude.");
+            ASYNC_TEST_SIGNAL
+        } failure:ASYNC_TEST_FAILURE_BLOCK];
+    } failure:ASYNC_TEST_FAILURE_BLOCK];
+    ASYNC_TEST_END
+}
+
 - (void)testRemove {
     ASYNC_TEST_START
-    [self.repository findById:createdId success:^(XXBook *book) {
-        [book destroyWithSuccess:^{
-            [self.repository findById:createdId success:^(XXBook *book) {
+    [self.repository findById:createdId success:^(XXWidget *widget) {
+        [widget destroyWithSuccess:^{
+            [self.repository findById:createdId success:^(XXWidget *widget) {
                 XCTFail(@"Model found after removal");
             } failure:^(NSError *err) {
                 ASYNC_TEST_SIGNAL

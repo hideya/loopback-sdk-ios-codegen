@@ -1,0 +1,38 @@
+{
+  "name": "widget",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "bars": {
+      "type": "number"
+    },
+    "flag": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "object"
+    },
+    "stringArray": {
+      "type": [
+        "string"
+      ]
+    },
+    "date": {
+      "type": "date"
+    },
+    "buffer": {
+      "type": "buffer"
+    },
+    "geopoint": {
+      "type": "geopoint"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}
