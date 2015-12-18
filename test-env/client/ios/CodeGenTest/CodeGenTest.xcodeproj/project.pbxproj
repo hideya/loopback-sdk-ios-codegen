@@ -21,7 +21,6 @@
 		898462061BF3382900FA4EB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898461E51BF3382900FA4EB3 /* UIKit.framework */; };
 		8984620E1BF3382900FA4EB3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8984620C1BF3382900FA4EB3 /* InfoPlist.strings */; };
 		898462101BF3382900FA4EB3 /* CodeGenTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8984620F1BF3382900FA4EB3 /* CodeGenTestTests.m */; };
-		89A0A8521C2417F400790A77 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89A0A8501C2417BF00790A77 /* CoreLocation.framework */; };
 		89D180711BF342B5009DA31A /* XXWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D1806E1BF342B5009DA31A /* XXWidget.m */; };
 		89D180721BF342B5009DA31A /* XXWidgetRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D180701BF342B5009DA31A /* XXWidgetRepository.m */; };
 /* End PBXBuildFile section */
@@ -81,7 +80,6 @@
 				898462041BF3382900FA4EB3 /* XCTest.framework in Frameworks */,
 				898462061BF3382900FA4EB3 /* UIKit.framework in Frameworks */,
 				898462051BF3382900FA4EB3 /* Foundation.framework in Frameworks */,
-				89A0A8521C2417F400790A77 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
